@@ -1,0 +1,8 @@
+.element {
+    border-radius: 10px;
+    background-color: #FFFFFF;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    max-width: 282px;
+}
