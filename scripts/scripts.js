@@ -19,7 +19,8 @@ function editClose() {
     popup.classList.remove('popup_opened');
 }
 
-function submit() {
+function submit(evt) {
+    evt.preventDefault();
     profileName.textContent = editName.value;
     profileDescription.textContent = editDescription.value;
     popup.style.display = 'none';
