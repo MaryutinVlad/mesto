@@ -16,6 +16,6 @@
     .elements {
         display: flex;
         flex-direction: column;
-        margin: 36px auto;
+        margin: 36px auto 0;
     }
 }

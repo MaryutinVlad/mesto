@@ -1,0 +1,8 @@
+.element__content {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    box-sizing: border-box;
+    padding: 25px 20px 31px 21px;
+    width: 100%;
+}
