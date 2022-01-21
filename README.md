@@ -17,5 +17,5 @@
 
 ### Ссылка проекта на gh-pages
 
-  https://maryutinvlad.github.io/mesto/
+  _https://maryutinvlad.github.io/mesto/_
 
