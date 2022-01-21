@@ -30,11 +30,12 @@ function createCard(name, link) {
         popupImage.querySelector('.popup__image').alt = name;
         openPopup(popupImage);
     });
-    renderCard(element);
+    return element;
 }
 
-initialCards.forEach((card) => {
-    createCard(card.name, card.link);
+initialCards.forEach((element) => {
+    const card = createCard(element.name, element.link);
+    renderCard(card);
 });
 
 
@@ -69,7 +70,7 @@ function editSave(evt) {
 
 function addSave(evt) {
     evt.preventDefault();
-    createCard(placeTitle.value, placeLink.value);
+    renderCard(createCard(placeTitle.value, placeLink.value));
     closePopup(popupAdd);
     evt.target.reset();
 }
