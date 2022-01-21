@@ -3,9 +3,12 @@
     position: fixed;
     width: 100vw;
     height: 100vh;
-    display: flex;
-    visibility: hidden;
     align-items: center;
     justify-content: center;
+    display: flex;
+    transition-property: opacity, visibility;
+    transition-duration: .3s;
+    transition-timing-function: ease-out;
+    visibility: hidden;
     opacity: 0;
 }
