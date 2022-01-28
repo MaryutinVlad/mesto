@@ -1,5 +1,5 @@
 .form__submit-button {
-    margin: 48px auto 37px;
+    margin: auto auto 37px;
     width: 358px;
     height: 50px;
     border-style: none;
@@ -12,6 +12,8 @@
     font-size: 18px;
     line-height: 21.78px;
     cursor: pointer;
+    padding: 0;
+    box-sizing: border-box;
 }
 
 .form__submit-button:hover {
@@ -25,10 +27,6 @@
         height: 46px;
         font-size: 14px;
         line-height: 16.94px;
-        margin: 40px auto 25px;
+        margin: auto auto 25px;
     }
-}
-
-.form__submit-button:invalid {
-    background-color: green;
 }

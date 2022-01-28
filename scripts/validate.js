@@ -1,3 +1,8 @@
+function disableSubmitButton(button, selector) {
+    button.classList.add(selector);
+    button.setAttribute('disabled', '');
+}
+
 const enableValidation = (elements) => {
 
     const checkInputValidity = (formElement, inputElement) => {
@@ -31,8 +36,7 @@ const enableValidation = (elements) => {
     
     const toggleButtonState = (inputList, button) => {
         if (hasInvalidInput(inputList)) {
-            button.classList.add(elements.disabledButtonSelector);
-            button.setAttribute('disabled', '');
+            disableSubmitButton(button, elements.disabledButtonSelector);
         }
         else {
             button.classList.remove(elements.disabledButtonSelector);

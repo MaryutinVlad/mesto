@@ -3,7 +3,7 @@
     flex-direction: column;
     background-color: #FFFFFF;
     width: 430px;
-    max-height: 390px;
+    height: 330px;
     border-radius: 10px;
     position: relative;
 }
@@ -11,6 +11,6 @@
 @media screen and (max-width: 700px) {
     .popup__container {
         width: 282px;
-        max-height: 452px;
+        height: 322px;
     }
 }
