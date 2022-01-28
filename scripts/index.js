@@ -12,6 +12,17 @@ const placeTitle = document.querySelector('.form__input-field_type_place-title')
 const placeLink = document.querySelector('.form__input-field_type_place-link');
 const popupImage = document.querySelector('.popup_type_image');
 
+function keyCode(evt) {
+    if (evt.key === 'Escape') {
+        closePopup(evt.currentTarget);
+    }
+}
+
+function closeOnClick(evt) {
+    if (evt.target === evt.currentTarget) {
+        closePopup(evt.currentTarget);
+    }
+}
 
 function renderCard(element) {
     elements.prepend(element);
@@ -55,10 +66,14 @@ popupAdd.querySelector('.form').addEventListener('submit', addSave);
 
 function openPopup(popup) {
     popup.classList.add('popup_opened');
+    popup.addEventListener('keydown', keyCode);
+    popup.addEventListener('click', closeOnClick);
 }
 
 function closePopup(popup) {
     popup.classList.remove('popup_opened');
+    popup.removeEventListener('keydown', keyCode);
+    popup.removeEventListener('click', closeOnClick);
 }
 
 function editSave(evt) {

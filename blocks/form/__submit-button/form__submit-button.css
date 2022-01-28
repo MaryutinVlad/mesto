@@ -28,3 +28,7 @@
         margin: 40px auto 25px;
     }
 }
+
+.form__submit-button:invalid {
+    background-color: green;
+}
