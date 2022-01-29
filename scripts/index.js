@@ -92,6 +92,4 @@ function addSave(evt) {
     renderCard(createCard(placeTitle.value, placeLink.value));
     closePopup(popupAdd);
     evt.target.reset();
-    const button = evt.target.querySelector('.form__submit-button');
-    disableSubmitButton(button, 'form__submit-button_disabled');
 }

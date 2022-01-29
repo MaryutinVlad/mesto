@@ -1,9 +1,9 @@
-function disableSubmitButton(button, selector) {
-    button.classList.add(selector);
-    button.setAttribute('disabled', '');
-}
-
 const enableValidation = (elements) => {
+
+    function disableSubmitButton(button) {
+        button.classList.add(elements.disabledButtonSelector);
+        button.setAttribute('disabled', '');
+    }
 
     const checkInputValidity = (formElement, inputElement) => {
         if (!inputElement.validity.valid) {
@@ -59,6 +59,10 @@ const enableValidation = (elements) => {
     formList.forEach((form) => {
         form.addEventListener('submit', (evt) => {
             evt.preventDefault();
+        });
+        form.addEventListener('reset', (evt) => {
+            const button = evt.target.querySelector('.form__submit-button');
+            disableSubmitButton(button);
         });
         setEventListeners(form);
     });
