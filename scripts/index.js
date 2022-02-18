@@ -1,4 +1,3 @@
-const cardTemplate = document.querySelector('#card').content;
 const elements = document.querySelector('.elements');
 const buttonEdit = document.querySelector('.profile__edit-button');
 const popupAdd = document.querySelector('.popup_type_add');
@@ -28,31 +27,6 @@ function closeOnClick(evt) {
 function renderCard(element) {
     elements.prepend(element);
 }
-
-function createCard(name, link) {
-    const element = cardTemplate.querySelector('.element').cloneNode(true);
-    element.querySelector('.element__image').src = link;
-    element.querySelector('.element__name').textContent = name;
-    element.querySelector('.element__image').alt = name;
-    element.querySelector('.element__like-button').addEventListener(
-        'click', evt => evt.target.classList.toggle('element__like-button_active'));
-
-    element.querySelector('.element__remove-button').addEventListener(
-        'click', evt => evt.target.closest('.element').remove());
-
-    element.querySelector('.element__image').addEventListener('click', () => {
-        popupImage.querySelector('.popup__image').src = link;
-        popupImage.querySelector('.popup__image-title').textContent = name;
-        popupImage.querySelector('.popup__image').alt = name;
-        openPopup(popupImage);
-    });
-    return element;
-}
-
-initialCards.forEach((element) => {
-    const card = createCard(element.name, element.link);
-    renderCard(card);
-});
 
 buttonAdd.addEventListener('click', () => openPopup(popupAdd));
 buttonEdit.addEventListener('click', () => {
@@ -89,7 +63,62 @@ function editSave(evt) {
 
 function addSave(evt) {
     evt.preventDefault();
-    renderCard(createCard(placeTitle.value, placeLink.value));
+    const card = new Card(evt, '#card');
+    card.link = placeLink.value;
+    card.name = placeTitle.value;
+    const cardElement = card.generateCard(popupImage, openPopup);
+    renderCard(cardElement);
     closePopup(popupAdd);
     evt.target.reset();
 }
+
+const initialCards = [
+    {
+   name: 'Карачаевск',
+   link: './images/element-karachaevsk.jpg'
+},
+{
+   name: 'Гора Эльбрус',
+   link: './images/element-elbrus.jpg'
+},
+{
+   name: 'Домбай',
+   link: './images/element-dombay.jpg'
+},
+{
+   name: 'Чжанъе Данься',
+   link: './images/element-zhangye-danxia.jpg'
+},
+{
+   name: 'Йосемити',
+   link: './images/element-yosemite.jpg'
+},
+{
+   name: 'Памуккале',
+   link: './images/element-pamukkale.jpg'
+}
+];
+
+initialCards.forEach((element) => {
+    const card = new Card(element, '#card');
+    const cardElement = card.generateCard(popupImage, openPopup);
+
+    renderCard(cardElement);
+});
+
+const formSelectors = {
+    inputSelector: '.form__input-field',
+    submitButtonSelector: '.form__submit-button',
+    disabledButtonSelector: 'form__submit-button_disabled',
+    inputErrorSelector: 'form__input-field_type_error',
+    errorSelector: 'form__error_visible'
+};
+
+const formAdd = new FormValidator(formSelectors, 'add');
+formAdd.enableValidation();
+
+const formEdit = new FormValidator(formSelectors, 'edit');
+formEdit.enableValidation();
+
+import {Card} from './Card.js';
+import {FormValidator} from './FormValidator.js';
