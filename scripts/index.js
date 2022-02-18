@@ -1,3 +1,6 @@
+import {Card} from './Card.js';
+import {FormValidator} from './FormValidator.js';
+
 const elements = document.querySelector('.elements');
 const buttonEdit = document.querySelector('.profile__edit-button');
 const popupAdd = document.querySelector('.popup_type_add');
@@ -11,9 +14,9 @@ const placeTitle = document.querySelector('.form__input-field_type_place-title')
 const placeLink = document.querySelector('.form__input-field_type_place-link');
 const popupImage = document.querySelector('.popup_type_image');
 
-function keyCode(evt) {
-    const popupOpened = document.querySelector('.popup_opened'); 
+function closeOnKeyCode(evt) {
     if (evt.key === 'Escape') {
+        const popupOpened = document.querySelector('.popup_opened');
         closePopup(popupOpened);
     }
 }
@@ -28,10 +31,17 @@ function renderCard(element) {
     elements.prepend(element);
 }
 
-buttonAdd.addEventListener('click', () => openPopup(popupAdd));
+buttonAdd.addEventListener('click', () => {
+    placeTitle.value = '';
+    placeLink.value = '';
+    formAdd._resetValidation();
+    openPopup(popupAdd)
+});
+
 buttonEdit.addEventListener('click', () => {
     nameEdit.value = profileName.textContent;
     descriptionEdit.value = profileDescription.textContent;
+    formEdit._resetValidation();
     openPopup(popupEdit);
 });
 
@@ -44,13 +54,13 @@ popupAdd.querySelector('.form').addEventListener('submit', addSave);
 
 function openPopup(popup) {
     popup.classList.add('popup_opened');
-    document.addEventListener('keydown', keyCode);
+    document.addEventListener('keydown', closeOnKeyCode);
     popup.addEventListener('click', closeOnClick);
 }
 
 function closePopup(popup) {
     popup.classList.remove('popup_opened');
-    document.removeEventListener('keydown', keyCode);
+    document.removeEventListener('keydown', closeOnKeyCode);
     popup.removeEventListener('click', closeOnClick);
 }
 
@@ -61,13 +71,21 @@ function editSave(evt) {
     closePopup(popupEdit);
 }
 
+function createCard(element) {
+    const card = new Card(element, '#card');
+    const cardElement = card.generateCard(popupImage, openPopup);
+
+    return cardElement;
+}
+
 function addSave(evt) {
     evt.preventDefault();
-    const card = new Card(evt, '#card');
-    card.link = placeLink.value;
-    card.name = placeTitle.value;
-    const cardElement = card.generateCard(popupImage, openPopup);
-    renderCard(cardElement);
+
+    renderCard(createCard({
+        name: placeTitle.value,
+        link: placeLink.value
+}, '#card'));
+
     closePopup(popupAdd);
     evt.target.reset();
 }
@@ -100,10 +118,7 @@ const initialCards = [
 ];
 
 initialCards.forEach((element) => {
-    const card = new Card(element, '#card');
-    const cardElement = card.generateCard(popupImage, openPopup);
-
-    renderCard(cardElement);
+    renderCard(createCard(element, '#card'));
 });
 
 const formSelectors = {
@@ -119,6 +134,3 @@ formAdd.enableValidation();
 
 const formEdit = new FormValidator(formSelectors, 'edit');
 formEdit.enableValidation();
-
-import {Card} from './Card.js';
-import {FormValidator} from './FormValidator.js';

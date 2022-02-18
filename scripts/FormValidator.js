@@ -52,6 +52,17 @@ class FormValidator {
         }
     }
 
+    _resetValidation() {
+        this._form = document.forms[this._formSelector]; 
+        this._inputList = Array.from(this._form.querySelectorAll(this._inputSelector));
+        this._button = this._form.querySelector(this._submitButtonSelector);
+
+        this._toggleButtonState(this._inputList, this._button);
+        this._inputList.forEach((inputElement) => {
+           this._hideErrorMessage(inputElement, this._form);
+        });
+    }
+
     _setEventListeners(form) {
         const inputList = Array.from(form.querySelectorAll(this._inputSelector));
         const submitButton = form.querySelector(this._submitButtonSelector);
