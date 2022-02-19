@@ -52,7 +52,7 @@ class FormValidator {
         }
     }
 
-    _resetValidation() {
+    resetValidation() {
         this._form = document.forms[this._formSelector]; 
         this._inputList = Array.from(this._form.querySelectorAll(this._inputSelector));
         this._button = this._form.querySelector(this._submitButtonSelector);

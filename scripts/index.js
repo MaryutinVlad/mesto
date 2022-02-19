@@ -34,14 +34,14 @@ function renderCard(element) {
 buttonAdd.addEventListener('click', () => {
     placeTitle.value = '';
     placeLink.value = '';
-    formAdd._resetValidation();
+    formAdd.resetValidation();
     openPopup(popupAdd)
 });
 
 buttonEdit.addEventListener('click', () => {
     nameEdit.value = profileName.textContent;
     descriptionEdit.value = profileDescription.textContent;
-    formEdit._resetValidation();
+    formEdit.resetValidation();
     openPopup(popupEdit);
 });
 
