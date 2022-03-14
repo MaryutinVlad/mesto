@@ -1,0 +1,10 @@
+.element {
+    border-radius: 10px;
+    background-color: #FFFFFF;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    max-width: 282px;
+    position: relative;
+}
