@@ -1,8 +1,9 @@
 class FormValidator {
+    
     constructor(data, selector) {
-        this._formSelector = selector;
-        this._inputSelector = data.inputSelector;
-        this._submitButtonSelector = data.submitButtonSelector;
+        this._form = document.forms[selector];
+        this._inputList = Array.from(this._form.querySelectorAll(data.inputSelector));
+        this._submitButton = this._form.querySelector(data.submitButtonSelector);
         this._disabledButtonSelector = data.disabledButtonSelector;
         this._inputErrorSelector = data.inputErrorSelector;
         this._errorSelector = data.errorSelector;
@@ -53,38 +54,30 @@ class FormValidator {
     }
 
     resetValidation() {
-        this._form = document.forms[this._formSelector]; 
-        this._inputList = Array.from(this._form.querySelectorAll(this._inputSelector));
-        this._button = this._form.querySelector(this._submitButtonSelector);
-
-        this._toggleButtonState(this._inputList, this._button);
+        this._toggleButtonState(this._inputList, this._submitButton);
         this._inputList.forEach((inputElement) => {
            this._hideErrorMessage(inputElement, this._form);
         });
     }
 
-    _setEventListeners(form) {
-        const inputList = Array.from(form.querySelectorAll(this._inputSelector));
-        const submitButton = form.querySelector(this._submitButtonSelector);
-        this._toggleButtonState(inputList, submitButton);
-        inputList.forEach((inputField) => {
+    _setEventListeners() {
+        this._toggleButtonState(this._inputList, this._submitButton);
+        this._inputList.forEach((inputField) => {
             inputField.addEventListener ('input', () => {
-                this._checkInputValidity(form, inputField);
-                this._toggleButtonState(inputList, submitButton);
+                this._checkInputValidity(this._form, inputField);
+                this._toggleButtonState(this._inputList, this._submitButton);
             });
         });
     }
 
     enableValidation() {
-        this._formElement = document.forms[this._formSelector];
-        this._formElement.addEventListener('submit', (evt) => {
+        this._form.addEventListener('submit', (evt) => {
             evt.preventDefault();
         });
-        this._formElement.addEventListener('reset', (evt) => {
-            const button = evt.target.querySelector(this._submitButtonSelector);
-            this._disableSubmitButton(button);
+        this._form.addEventListener('reset', () => {
+            this._disableSubmitButton(this._submitButton);
         });
-        this._setEventListeners(this._formElement);
+        this._setEventListeners();
     }
 }
 

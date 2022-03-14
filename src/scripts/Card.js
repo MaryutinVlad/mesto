@@ -25,10 +25,10 @@ class Card {
     }
 
     _setDecoration() {
-        this._element.querySelector('.element__image').src = this.link;
-        this._element.querySelector('.element__image').alt = this.name;
+        const elementImage = this._element.querySelector('.element__image');
+        elementImage.src = this.link;
+        elementImage.alt = this.name;
         this._element.querySelector('.element__name').textContent = this.name;
-        console.log(this._element.querySelector('.element__image'));
     }
 
     _setLike(evt) {
@@ -37,8 +37,9 @@ class Card {
         .toggle('element__like-button_active');
     }
 
-    _setRemove(evt) {
-        evt.target.closest('.element').remove();    
+    _setRemove() {
+        this._element.remove();
+        this._element = null;
     }
 
     _setEventListeners() {
