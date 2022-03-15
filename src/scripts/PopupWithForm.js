@@ -17,17 +17,12 @@ export default class PopupWithForm extends Popup {
     }
 
     setEventListeners() {
-        this._popupElement.querySelector('.form').addEventListener('submit', (evt) => {
-            evt.preventDefault();
+        this._popupElement.querySelector('.form').addEventListener('submit', () => {
             this._formSubmit(this._getInputValues());
         });
     }
 
     close() {
-        this._popupElement.querySelector('.form').removeEventListener('submit', (evt) => {
-            evt.preventDefault();
-            this._formSubmit(this._getInputValues());
-        });
 
         super.close();
         this._popupElement.querySelector('.form').reset();
