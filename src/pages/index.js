@@ -77,11 +77,11 @@ const formSelectors = {
     errorSelector: 'form__error_visible'
 };
 
-const popupAdd = new PopupWithForm('.popup_type_add', () => {
+const popupAdd = new PopupWithForm('.popup_type_add', (data) => {
 
     const card = createCard({
-        name: placeTitle.value,
-        link: placeLink.value
+        name: data.place,
+        link: data.link
     });
     
     cardList.addItem(card);
@@ -92,7 +92,7 @@ popupAdd.setEventListeners();
 
 const popupEdit = new PopupWithForm('.popup_type_edit', (data) => {
 
-    user.setUserInfo(data.firstField, data.secondField);
+    user.setUserInfo(data.name, data.description);
     popupEdit.close();
 });
 popupEdit.setEventListeners();
