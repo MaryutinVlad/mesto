@@ -7,11 +7,9 @@ export default class Section {
     }
 
     renderItems() {
-        this._items instanceof Array ? 
           this._items.forEach((item) => {
               this._renderer(item);
-          }) :
-          this._renderer(this._items);
+          });
     }
 
     addItem(element) {

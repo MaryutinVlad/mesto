@@ -1,0 +1,16 @@
+.popup__confirm-container {
+    display: flex;
+    flex-direction: column;
+    background-color: #FFFFFF;
+    width: 430px;
+    height: 181px;
+    border-radius: 10px;
+    position: relative;
+}
+
+@media screen and (max-width: 700px) {
+    .popup__confirm-container {
+        width: 282px;
+        height: 150px;
+    }
+}

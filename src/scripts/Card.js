@@ -1,9 +1,11 @@
 class Card {
-    constructor(data, selector, handleCardClick) {
+    constructor(data, selector, handleCardClick, handleRemoveClick, handleLikeClick) {
         this.name = data.name;
         this.link = data.link;
         this._selector = selector;
         this.handleCardClick = handleCardClick;
+        this.handleRemoveClick = handleRemoveClick;
+        this.handleLikeClick = handleLikeClick;
     }
 
     _getElement() {        
@@ -38,17 +40,21 @@ class Card {
     }
 
     _setRemove() {
+        console.log(this._element);
         this._element.remove();
         this._element = null;
     }
 
     _setEventListeners() {
         this._element.querySelector('.element__like-button').addEventListener(
-            'click', (evt) => this._setLike(evt)
-            );
+            'click', this.handleLikeClick
+        );
+        this._element.querySelector('.element__like-button').addEventListener(
+            'click', this._setLike
+        );
         this._element.querySelector('.element__remove-button').addEventListener(
-            'click', (evt) => this._setRemove(evt)
-            );
+            'click', this.handleRemoveClick
+        );
         this._element.querySelector('.element__image').addEventListener(
             'click', this.handleCardClick
         );
