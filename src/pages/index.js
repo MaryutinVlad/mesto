@@ -33,42 +33,93 @@ const api = new Api({
 });
 
 const popupAvatar = new PopupWithForm('.popup_type_edit-avatar', (data) => {
+  renderLoading(true, 'avatar');
   api.updateProfile(data, true)
     .then((res) => {
       const avatar = document.querySelector('.profile__avatar');
       avatar.src = res.avatar;
       avatar.onload = popupAvatar.close();
     })
+    .catch(err => console.log(`Ошибка.....: ${err}`))
+    .finally(() => renderLoading(false, 'avatar'));
 });
 
 const popupAdd = new PopupWithForm('.popup_type_add', (data) => {
-  addCard(data);
+  renderLoading(true, 'add');
+  api.addCard(data)
+    .then((res) => {
+
+      const card = createCard({
+        name: data.place,
+        link: data.link
+      });
+
+      card.id = res._id;
+      const removeButton = card.querySelector('.element__remove-button');
+      removeButton.id = res._id;
+      
+      cardList.addItem(card);
+      popupAdd.close();
+    })
+    .catch(err => console.log(`Ошибка.....: ${err}`))
+    .finally(() => renderLoading(false, 'add'));
 });
 
 const popupEdit = new PopupWithForm('.popup_type_edit', (data) => {
+  renderLoading(true, 'edit');
   api.updateProfile(data, false)
     .then((res) => {
       user.setUserInfo(res.name, res.about);
       popupEdit.close();
-    });
+    })
+    .catch(err => console.log(`Ошибка.....: ${err}`))
+    .finally(() => renderLoading(false, 'edit'));
 });
 
 const popupConfirm = new PopupConfirm('.popup_type_confirm', (evt) => {
   evt.preventDefault();
   api.deleteCard(evt.target.id)
     .then(document.getElementById(evt.target.id).closest('.element').remove())
-    .then(popupConfirm.close());
+    .then(popupConfirm.close())
+    .catch(err => console.log(`Ошибка.....: ${err}`))
 });
-
+  
 const popupImage = new PopupWithImage('.popup_type_image');
 const user = new UserInfo({ name: '.profile__name', description: '.profile__description'});
-const cardList = new Section({
-    items: [],
-    renderer: updateCards()
-}, '.elements');
+const cardList = new Section(
+  (item) => {
+    const card = createCard(item);
+    const removeButton = card.querySelector('.element__remove-button');
+    const myId = document.querySelector('.profile').id;
+    card.id = item._id;
+  
+    if (item.owner._id !== myId) {   
+      removeButton.style = 'visibility: hidden;';
+    }
+    else {
+      removeButton.id = item._id;
+    }
+    if (item.likes.length > 0) {
+      card.querySelector('.element__like-count').textContent = item.likes.length
+    }
+  
+    item.likes.forEach((user) => {
+      if (user._id === myId) {
+        card.querySelector('.element__like-button').classList.add('element__like-button_active')
+      }
+    });
+  
+    cardList.addItem(card);
+  }, '.elements');
+
 const formAdd = new FormValidator(formSelectors, 'add');
 const formEdit = new FormValidator(formSelectors, 'edit');
 const formAvatar = new FormValidator(formSelectors, 'avatar');
+
+function renderLoading(state, form) {
+  const button = document.forms[form].querySelector('.form__submit-button');
+  state ? button.textContent = 'Сохранение...' : button.textContent = 'Сохранить';
+}
 
 function createCard(element) {
   const card = new Card(
@@ -83,68 +134,26 @@ function createCard(element) {
         if (!evt.target.classList.contains('element__like-button_active'))
           {
             api.toggleLike(element.id, 'PUT')
-              .then(res => likeCount.textContent = res.likes.length);
+              .then(res => {
+                likeCount.textContent = res.likes.length;
+                evt.target.classList.add('element__like-button_active');
+              })
+              .catch(err => console.log(`Ошибка.....: ${err}`))
           }
         else {
           api.toggleLike(element.id, 'DELETE')
-            .then(res => res.likes.length > 0 ? 
-              likeCount.textContent = res.likes.length : likeCount.textContent = '');
+            .then(res => {
+              res.likes.length > 0 ? 
+              likeCount.textContent = res.likes.length : likeCount.textContent = '';
+              evt.target.classList.remove('element__like-button_active');
+            })
+            .catch(err => console.log(`Ошибка.....: ${err}`))  
             }
       });
   const cardElement = card.generateCard();
 
   return cardElement;
 }
-
-function addCard(data) {
-
-  return api.addCard(data)
-    .then((res) => {
-
-      const card = createCard({
-        name: data.place,
-        link: data.link
-      });
-
-      card.id = res._id;
-      const removeButton = card.querySelector('.element__remove-button');
-      removeButton.id = res._id;
-      
-      card.onload = cardList.addItem(card);
-      popupAdd.close();
-    });
-}
-
-function updateCards() {
-  api.getInitialCards()
-    .then((items) => {
-      return items.forEach(item => {
-
-        const card = createCard(item);
-        const removeButton = card.querySelector('.element__remove-button');
-        const myId = document.querySelector('.profile').id;
-        card.id = item._id;
-
-        if (item.owner._id !== myId) {   
-          removeButton.style = 'visibility: hidden;';
-        }
-        else {
-          removeButton.id = item._id;
-        }
-        if (item.likes.length > 0) {
-          card.querySelector('.element__like-count').textContent = item.likes.length
-        }
-
-        item.likes.forEach((user) => {
-          if (user._id === myId)
-            {card.querySelector('.element__like-button').classList.add('element__like-button_active')}
-          });
-
-        cardList.addItem(card);
-        });
-    })
-}
-
 
 buttonAdd.addEventListener('click', () => {
     placeTitle.value = '';
@@ -175,9 +184,13 @@ api.getUserData()
     user.setUserInfo(data.name, data.about);
     document.querySelector('.profile').id = data._id;
     document.querySelector('.profile__avatar').src = data.avatar;
-  });
+  })
+  .catch(err => console.log(err));
 
-cardList.renderItems();
+Promise.all([api.getUserData(), api.getInitialCards()])
+    .then(cardList.renderItems(api.getInitialCards(res => {return res})))
+    .catch(err => console.log(err));
+
 formAdd.enableValidation();
 formEdit.enableValidation();
 formAvatar.enableValidation();
