@@ -49,17 +49,10 @@ const popupAdd = new PopupWithForm('.popup_type_add', (data) => {
   api.addCard(data)
     .then((res) => {
 
-      const card = createCard({
-        name: data.place,
-        link: data.link
-      });
-
-      card.id = res._id;
-      const removeButton = card.querySelector('.element__remove-button');
-      removeButton.id = res._id;
-      
+      const card = createCard(res);
       cardList.addItem(card);
       popupAdd.close();
+      
     })
     .catch(err => console.log(`Ошибка.....: ${err}`))
     .finally(() => renderLoading(false, 'add'));
@@ -88,28 +81,10 @@ const popupImage = new PopupWithImage('.popup_type_image');
 const user = new UserInfo({ name: '.profile__name', description: '.profile__description'});
 const cardList = new Section(
   (item) => {
+
     const card = createCard(item);
-    const removeButton = card.querySelector('.element__remove-button');
-    const myId = document.querySelector('.profile').id;
-    card.id = item._id;
-  
-    if (item.owner._id !== myId) {   
-      removeButton.style = 'visibility: hidden;';
-    }
-    else {
-      removeButton.id = item._id;
-    }
-    if (item.likes.length > 0) {
-      card.querySelector('.element__like-count').textContent = item.likes.length
-    }
-  
-    item.likes.forEach((user) => {
-      if (user._id === myId) {
-        card.querySelector('.element__like-button').classList.add('element__like-button_active')
-      }
-    });
-  
     cardList.addItem(card);
+
   }, '.elements');
 
 const formAdd = new FormValidator(formSelectors, 'add');
@@ -179,16 +154,14 @@ popupAdd.setEventListeners();
 popupEdit.setEventListeners();
 popupConfirm.setEventListeners();
 
-api.getUserData()
-  .then(data => {
-    user.setUserInfo(data.name, data.about);
-    document.querySelector('.profile').id = data._id;
-    document.querySelector('.profile__avatar').src = data.avatar;
-  })
-  .catch(err => console.log(err));
+api.getAppInfo()
+    .then(([cardsArray, userData]) => {
+      user.setUserInfo(userData.name, userData.about);
+      document.querySelector('.profile').id = userData._id;
+      document.querySelector('.profile__avatar').src = userData.avatar;
 
-Promise.all([api.getUserData(), api.getInitialCards()])
-    .then(cardList.renderItems(api.getInitialCards(res => {return res})))
+      cardList.renderItems(cardsArray);
+    })
     .catch(err => console.log(err));
 
 formAdd.enableValidation();

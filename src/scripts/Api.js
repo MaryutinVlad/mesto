@@ -51,4 +51,8 @@ export default class Api {
     toggleLike(cardId, action) {
         return this._request(`https://mesto.nomoreparties.co/v1/cohort-38/cards/${cardId}/likes`, action); 
     }
+
+    getAppInfo() {
+        return Promise.all([this.getInitialCards(), this.getUserData()]);
+    }
 }
